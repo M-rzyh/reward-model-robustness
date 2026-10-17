@@ -1,0 +1,14 @@
+# private notes (never public)
+AGENT_INSTRUCTIONS.md
+18_Vulcan_Relogin.md
+
+# big or generated files
+checkpoints/
+outputs/
+wandb/
+hf_cache/
+*.safetensors
+*.bin
+*.pt
+.env
+__pycache__/
