@@ -12,3 +12,4 @@ hf_cache/
 *.pt
 .env
 __pycache__/
+logs/
