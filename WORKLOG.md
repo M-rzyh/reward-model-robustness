@@ -2,6 +2,14 @@
 
 Regenerated requirements.txt from pip freeze with the env active; the 15 Oct freeze had been taken from the cluster’s module Python by mistake.
 
+The two multi-turn examples parse exactly as they should, and 4,686 of 4,708 transcripts (99.5%) parse cleanly. Write the two counts in WORKLOG.
+
+The loader works. The numbers add up exactly:
+
+test: 2,333 kept + 4 + 9 + 6 + 2 = 2,354 ✓
+train: 43,537 kept + 59 + 50 + 128 + 61 = 43,835 ✓
+unique pair_ids = kept, so no duplicates, and the record has the exact shape from spec §3.2.
+
 2026-10-17
 
 Smoke job 1821752 on node rack02-11: L40S 46 GB, driver 595.91 (CUDA 13.2), cuda available: True, logits shape (2, 1). Queue wait about 1 s, runtime 25 s.
