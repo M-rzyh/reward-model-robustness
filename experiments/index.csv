@@ -1,0 +1,2 @@
+run_id,train_source,seed,q,acc_hh_test,acc_uf_test,n_train,steps,train_wall_s,git_sha,date
+core_hh_q0_s0,hh,0,0.0,0.7059579939991427,0.564735516372796,19995,625,600.3,2cc0cc2,2026-10-22
