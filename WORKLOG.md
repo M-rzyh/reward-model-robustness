@@ -10,6 +10,8 @@ test: 2,333 kept + 4 + 9 + 6 + 2 = 2,354 ✓
 train: 43,537 kept + 59 + 50 + 128 + 61 = 43,835 ✓
 unique pair_ids = kept, so no duplicates, and the record has the exact shape from spec §3.2.
 
+UF has 424 training rows where chosen and rejected are the same text (0.7%).
+
 2026-10-17
 
 Smoke job 1821752 on node rack02-11: L40S 46 GB, driver 595.91 (CUDA 13.2), cuda available: True, logits shape (2, 1). Queue wait about 1 s, runtime 25 s.
