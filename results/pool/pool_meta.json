@@ -1,0 +1,29 @@
+{
+  "config": {
+    "generator_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "generator_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "prompt_source": "hh_test",
+    "n_prompts": 500,
+    "n_per_prompt": 8,
+    "max_prompt_tokens": 384,
+    "max_new_tokens": 512,
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": 0,
+    "repetition_penalty": 1.0,
+    "seed": 1234,
+    "batch_prompts": 16
+  },
+  "n_prompts": 500,
+  "n_per_prompt": 8,
+  "n_test_records": 2333,
+  "n_unique_prompts": 2333,
+  "n_within_max_prompt_tokens": 2333,
+  "pool_sha1": "8afc0922dfa4391f66770bfecc9ad972a2b16ac7",
+  "mean_n_tokens": 158.229,
+  "frac_truncated": 0.03525,
+  "wall_time_s": 1132.3,
+  "gpu": "NVIDIA L40S",
+  "git_sha": "0cc98b0",
+  "backend": "transformers.generate"
+}
