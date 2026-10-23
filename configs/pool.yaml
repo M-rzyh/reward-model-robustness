@@ -1,0 +1,15 @@
+generator_id: Qwen/Qwen2.5-1.5B-Instruct
+generator_revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+prompt_source: hh_test            # prompts come from HH helpful-base test, deduplicated
+n_prompts: 500
+n_per_prompt: 8
+# max_prompt_tokens: 512            # skip very long multi-turn prompts (keeps generation cheap)
+# max_new_tokens: 256
+max_prompt_tokens: 384
+max_new_tokens: 512
+temperature: 1.0
+top_p: 1.0
+top_k: 0                          # 0 = disabled (Qwen's default generation_config sets 20)
+repetition_penalty: 1.0           # Qwen's default is 1.05; we want plain sampling
+seed: 1234
+batch_prompts: 16                 # 16 prompts x 8 samples = 128 sequences per generate() call
