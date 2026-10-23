@@ -13,3 +13,4 @@ hf_cache/
 .env
 __pycache__/
 logs/
+scratch_*.py

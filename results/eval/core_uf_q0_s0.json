@@ -1,0 +1,69 @@
+{
+  "run_id": "core_uf_q0_s0",
+  "run_meta": {
+    "train_source": "uf",
+    "seed": 0,
+    "noise": {
+      "kind": "none",
+      "q": 0.0
+    },
+    "n_train_requested": 20000,
+    "n_train_after_length_filter": 18754,
+    "n_filtered_by_max_length": 1246,
+    "subsample_hash": "ea7dd8998db4f2fc",
+    "loader_dropped": {
+      "identical": 424,
+      "empty_response": 81
+    },
+    "config": {
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "n_train": 20000,
+      "max_length": 1024,
+      "learning_rate": 1e-05,
+      "num_train_epochs": 1,
+      "per_device_train_batch_size": 4,
+      "gradient_accumulation_steps": 8,
+      "lr_scheduler_type": "cosine",
+      "warmup_steps": 0.03,
+      "bf16": true,
+      "gradient_checkpointing": true,
+      "logging_steps": 10
+    },
+    "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "model_revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+    "versions": {
+      "torch": "2.14.1+cu130",
+      "transformers": "5.19.0",
+      "trl": "1.15.0"
+    },
+    "git_sha": "48c4336",
+    "gpu": "NVIDIA L40S",
+    "wall_time_s": 947.5,
+    "final_train_loss": 0.5481884479522705,
+    "final_train_accuracy": 0.7125,
+    "n_optimizer_steps": 587
+  },
+  "eval": {
+    "hh_test": {
+      "n_pairs": 2333,
+      "accuracy": 0.6163737676810973,
+      "accuracy_ci95": [
+        0.5975139305615088,
+        0.634804972138877
+      ],
+      "n_ties": 42,
+      "mean_margin": 0.34439295530319214
+    },
+    "uf_test": {
+      "n_pairs": 1985,
+      "accuracy": 0.6831234256926952,
+      "accuracy_ci95": [
+        0.6629722921914357,
+        0.7032745591939547
+      ],
+      "n_ties": 41,
+      "mean_margin": 0.6205459237098694
+    }
+  }
+}
