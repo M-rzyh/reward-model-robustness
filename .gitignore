@@ -14,3 +14,4 @@ hf_cache/
 __pycache__/
 logs/
 scratch_*.py
+results/pool/smoke_*
