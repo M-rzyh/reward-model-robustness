@@ -1,6 +1,6 @@
 # Do human- and GPT-4-trained reward models pick the same response?
 
-**Status:** in progress, started 2026-10-14; last updated 2026-10-27. Preliminary: 3 seeds per configuration.
+**Status:** in progress, started 2026-10-14; last updated 2026-10-27. 5 seeds per configuration.
 
 Reward models turn preference labels into the training signal for language models. This project trains the same
 reward model on **human** preference labels (Anthropic HH-RLHF, helpful-base) and on **GPT-4** preference labels
@@ -30,7 +30,7 @@ change is what reaches a policy through best-of-n or RL.
 | Backbone | `Qwen/Qwen2.5-0.5B-Instruct` @ `7ae5576` with a scalar head |
 | Loss / trainer | Bradley-Terry, TRL 1.15.0 `RewardTrainer` |
 | Hyper-parameters | lr 1e-5, cosine, 3% warmup, effective batch 32 (4 × 8 accumulation), 1 epoch, bf16 training, max length 1,024 |
-| Seeds | 3 per training source (0, 1, 2); the seed sets both the subsample and the training order |
+| Seeds | 5 per training source (0–4); the seed sets both the subsample and the training order |
 | Evaluation | full HH helpful-base test (2,333 pairs kept) and UF `test_prefs` (1,985 kept); a pair counts as correct only if r(chosen) > r(rejected), so ties count as wrong |
 | Best-of-8 pool | 500 HH-test prompts × 8 responses from `Qwen/Qwen2.5-1.5B-Instruct` @ `989aa79` (T = 1.0, top-p 1.0, top-k off, no repetition penalty, ≤512 new tokens, seed 1234), frozen, sha1 `8afc0922`; every model scores the same 4,000 candidates |
 
@@ -46,9 +46,13 @@ identical). UF test 2,000 → 1,985 (identical 12, empty 3). UF train 61,135 →
 | core_hh_q0_s0 | 19,995 | 5 (0.0%) | 625 | 10.0 |
 | core_hh_q0_s1 | 19,996 | 4 (0.0%) | 625 | 9.9 |
 | core_hh_q0_s2 | 19,995 | 5 (0.0%) | 625 | 10.1 |
+| core_hh_q0_s3 | 19,995 | 5 (0.0%) | 625 | 10.1 |
+| core_hh_q0_s4 | 19,995 | 5 (0.0%) | 625 | 9.9 |
 | core_uf_q0_s0 | 18,754 | 1,246 (6.2%) | 587 | 15.8 |
 | core_uf_q0_s1 | 18,723 | 1,277 (6.4%) | 586 | 15.7 |
 | core_uf_q0_s2 | 18,709 | 1,291 (6.5%) | 585 | 16.0 |
+| core_uf_q0_s3 | 18,743 | 1,257 (6.3%) | 586 | 15.7 |
+| core_uf_q0_s4 | 18,752 | 1,248 (6.2%) | 586 | 15.9 |
 <!-- END results/runs.md -->
 
 UltraFeedback responses are about five times longer than HH responses (mean chosen length 282 vs 56 tokens), so
@@ -59,19 +63,19 @@ on slightly different numbers of pairs. At evaluation no pair is dropped; long p
 
 ### 1. Held-out pairwise accuracy (2×2)
 
-Mean ± sample std over 3 seeds. The length-only baseline picks the longer response (ties get half credit).
+Mean ± sample std over 5 seeds. The length-only baseline picks the longer response (ties get half credit).
 
 <!-- BEGIN results/summary_2x2_fp32.md -->
 | trained on | seeds | hh_test (human labels) | uf_test (GPT-4 labels) |
 |---|---|---|---|
 | length-only baseline | – | 0.601 | 0.565 |
-| RM trained on hh (q=0) | 3 | 0.708 ± 0.005 | 0.550 ± 0.015 |
-| RM trained on uf (q=0) | 3 | 0.625 ± 0.002 | 0.687 ± 0.004 |
+| RM trained on hh (q=0) | 5 | 0.709 ± 0.004 | 0.551 ± 0.016 |
+| RM trained on uf (q=0) | 5 | 0.631 ± 0.008 | 0.689 ± 0.004 |
 <!-- END results/summary_2x2_fp32.md -->
 
-In-source accuracy is 10–12 points above the length baseline. Cross-source accuracy falls to about the length
+In-source accuracy is 11–12 points above the length baseline. Cross-source accuracy falls to about the length
 baseline in both directions: the human-trained model scores below it on GPT-4 labels, and the GPT-4-trained model
-scores slightly above it on human labels. The datasets differ in prompts and responses as well as in who labelled
+scores 3 points above it on human labels. The datasets differ in prompts and responses as well as in who labelled
 them, so this table alone cannot separate the label source from the data; the best-of-8 pool below addresses part of
 that.
 
@@ -79,7 +83,7 @@ that.
 
 For each prompt, a model's pick is the highest-scoring of the 8 candidates. The **flip rate** between two models is
 the fraction of the 500 prompts where they pick different candidates. Within-config pairs (two seeds of the same
-training source) give the noise floor; cross-config pairs are all 9 HH-seed × UF-seed combinations. Kendall τ-b
+training source) give the noise floor; cross-config pairs are all 25 HH-seed × UF-seed combinations. Kendall τ-b
 compares the full ranking of the 8 candidates and is averaged over prompts. The gap CI resamples prompts, because
 the pairings share models and their spread is not an independent uncertainty.
 
@@ -88,32 +92,32 @@ Best-of-8 on 500 HH-test prompts (pool sha1 8afc0922); mean ± sample std over p
 
 | pairing | pairs | flip rate (%) | Kendall τ |
 |---|---|---|---|
-| within_hh | 3 | 41.8 ± 4.3 | 0.709 ± 0.034 |
-| within_uf | 3 | 37.9 ± 0.9 | 0.645 ± 0.016 |
-| cross_hh_uf | 9 | 66.2 ± 3.7 | 0.378 ± 0.029 |
+| within_hh | 10 | 40.0 ± 3.1 | 0.715 ± 0.019 |
+| within_uf | 10 | 37.6 ± 2.8 | 0.659 ± 0.030 |
+| cross_hh_uf | 25 | 64.2 ± 3.5 | 0.397 ± 0.032 |
 | two independent random pickers | – | 87.5 | 0 |
 
 | flip-rate gap (percentage points) | mean | 95% CI (bootstrap over prompts) |
 |---|---|---|
-| cross minus within hh | 24.4 | [20.8, 28.1] |
-| cross minus within uf | 28.3 | [24.0, 32.2] |
-| cross minus within both | 26.3 | [23.3, 29.5] |
+| cross minus within hh | 24.1 | [21.2, 27.3] |
+| cross minus within uf | 26.6 | [23.1, 29.6] |
+| cross minus within both | 25.4 | [22.8, 27.9] |
 
 | reward model | seeds | selected length (tokens) | picks the longest (%) |
 |---|---|---|---|
-| trained on hh | 3 | 205.4 ± 2.0 | 29.1 ± 1.4 |
-| trained on uf | 3 | 204.6 ± 5.2 | 26.3 ± 1.0 |
+| trained on hh | 5 | 209.5 ± 5.8 | 30.8 ± 2.7 |
+| trained on uf | 5 | 205.7 ± 4.5 | 26.4 ± 1.3 |
 | pool mean (all 4000) | – | 158.2 | – |
 | always pick the longest | – | 274.0 | 100 |
 | random pick (chance) | – | 158.2 | 12.5 |
 <!-- END results/best_of_n/fp32/summary.md -->
 
-On the same best-of-8 pool, HH- and UF-trained reward models pick a different winner on 66.2 ± 3.7% of prompts,
-against 41.8 ± 4.3% (HH seeds) and 37.9 ± 0.9% (UF seeds) between seeds of the same configuration. The cross-config
-flip rate is 26.3 points above the seed floor (95% CI 23.3–29.5), and rankings agree much less across sources
-(τ ≈ 0.38) than within a source (τ ≈ 0.65–0.71). The divergence is not a length effect: both configurations choose
-responses of about the same length (≈205 tokens, against a pool mean of 158), and both pick the longest candidate
-about 2–2.5× more often than chance. The seed floor is itself high: two seeds of the same model disagree on about 40%
+On the same best-of-8 pool, HH- and UF-trained reward models pick a different winner on 64.2 ± 3.5% of prompts,
+against 40.0 ± 3.1% (HH seeds) and 37.6 ± 2.8% (UF seeds) between seeds of the same configuration. The cross-config
+flip rate is 25.4 points above the seed floor (95% CI 22.8–27.9), and rankings agree much less across sources
+(τ ≈ 0.40) than within a source (τ ≈ 0.66–0.72). The divergence is not a length effect: both configurations choose
+responses of about the same length (206–210 tokens, against a pool mean of 158), and both pick the longest
+candidate 2–2.5× more often than chance (the HH model slightly more often: 30.8% vs 26.4%). The seed floor is itself high: two seeds of the same model disagree on about 40%
 of prompts, so best-of-8 selection with a 0.5B reward model is noisy before the label source is changed.
 
 `results/best_of_n/fp32/disagreements_hh_s0_vs_uf_s0.md` lists the first five prompts where HH seed 0 and UF seed 0
@@ -135,8 +139,8 @@ in the pool contain duplicates; one has 8 identical candidates, so τ is undefin
 | trained on | seeds | hh_test (human labels) | uf_test (GPT-4 labels) |
 |---|---|---|---|
 | length-only baseline | – | 0.601 | 0.565 |
-| RM trained on hh (q=0) | 3 | 0.705 ± 0.006 | 0.544 ± 0.018 |
-| RM trained on uf (q=0) | 3 | 0.617 ± 0.002 | 0.685 ± 0.004 |
+| RM trained on hh (q=0) | 5 | 0.705 ± 0.004 | 0.547 ± 0.017 |
+| RM trained on uf (q=0) | 5 | 0.623 ± 0.008 | 0.686 ± 0.004 |
 <!-- END results/summary_2x2.md -->
 
 <!-- BEGIN results/best_of_n/summary.md -->
@@ -144,21 +148,21 @@ Best-of-8 on 500 HH-test prompts (pool sha1 8afc0922); mean ± sample std over p
 
 | pairing | pairs | flip rate (%) | Kendall τ |
 |---|---|---|---|
-| within_hh | 3 | 42.1 ± 4.5 | 0.697 ± 0.035 |
-| within_uf | 3 | 38.0 ± 1.0 | 0.635 ± 0.012 |
-| cross_hh_uf | 9 | 66.7 ± 3.6 | 0.374 ± 0.031 |
+| within_hh | 10 | 41.1 ± 3.6 | 0.702 ± 0.020 |
+| within_uf | 10 | 38.3 ± 2.5 | 0.649 ± 0.027 |
+| cross_hh_uf | 25 | 64.9 ± 3.5 | 0.392 ± 0.032 |
 | two independent random pickers | – | 87.5 | 0 |
 
 | flip-rate gap (percentage points) | mean | 95% CI (bootstrap over prompts) |
 |---|---|---|
-| cross minus within hh | 24.7 | [21.2, 28.6] |
-| cross minus within uf | 28.7 | [24.4, 32.6] |
-| cross minus within both | 26.7 | [23.5, 29.8] |
+| cross minus within hh | 23.7 | [20.6, 27.1] |
+| cross minus within uf | 26.5 | [23.2, 29.5] |
+| cross minus within both | 25.1 | [22.6, 27.7] |
 
 | reward model | seeds | selected length (tokens) | picks the longest (%) |
 |---|---|---|---|
-| trained on hh | 3 | 203.7 ± 1.6 | 28.9 ± 0.6 |
-| trained on uf | 3 | 204.6 ± 5.9 | 25.7 ± 2.2 |
+| trained on hh | 5 | 208.0 ± 6.0 | 30.6 ± 2.4 |
+| trained on uf | 5 | 205.5 ± 5.3 | 25.9 ± 1.7 |
 | pool mean (all 4000) | – | 158.2 | – |
 | always pick the longest | – | 274.0 | 100 |
 | random pick (chance) | – | 158.2 | 12.5 |
@@ -171,7 +175,7 @@ Best-of-8 on 500 HH-test prompts (pool sha1 8afc0922); mean ± sample std over p
 - **Dataset confound.** HH and UF differ in prompts, response style and length as well as in labeller. The shared
   pool removes the confound on the *evaluation* side (every model ranks the same candidates), not on the training
   side. The pool prompts come from HH test, so they are in-domain for the HH model and out-of-domain for the UF model.
-- **3 seeds** per configuration; treat everything as preliminary.
+- **5 seeds** per configuration: enough for the headline gap, but small for per-seed spread.
 - **One small backbone** (0.5B). Larger reward models may agree more with each other, or less.
 - **Unequal training sizes** after the 1,024-token filter (about 18.7k UF vs 20.0k HH pairs).
 - **One generator** for the pool (Qwen2.5-1.5B-Instruct), 512-token cap with 3.5% of candidates truncated, 28 of 500
@@ -188,8 +192,8 @@ conda activate /scratch/marzii/envs/rmr                         # versions pinne
 python scripts/prefetch_data.py                                 # needs internet; saves both datasets to disk
 python -m pytest -q tests
 
-for src in hh uf; do for s in 0 1 2; do SOURCE=$src SEED=$s sbatch scripts/train_rm.sh; done; done
-for r in core_{hh,uf}_q0_s{0,1,2}; do RUN_ID=$r sbatch scripts/eval_rm.sh; done        # bf16 eval + experiments/index.csv
+for src in hh uf; do for s in 0 1 2 3 4; do SOURCE=$src SEED=$s sbatch scripts/train_rm.sh; done; done
+for r in core_{hh,uf}_q0_s{0..4}; do RUN_ID=$r sbatch scripts/eval_rm.sh; done        # bf16 eval + experiments/index.csv
 sbatch scripts/make_pool.sh                                     # frozen best-of-8 pool
 sbatch scripts/score_pool.sh                                    # bf16 pool scores
 sbatch scripts/precision_check.sh                               # float32 eval + pool scores
@@ -203,7 +207,7 @@ sbatch scripts/cpu_job.sh bash -c "python -m src.eval.length_stats && python -m 
 ## Next steps
 
 - Relabel the *same* pairs with both sources, to remove the dataset confound.
-- ≥5 seeds for the headline numbers.
+- More seeds and a second backbone size, to see whether the seed floor shrinks.
 - A held-out judge to score which selection is better (win rate), not just whether it differs.
 - A length-bias noise operator on the human labels, q ∈ {0.1, 0.2, 0.3}, with the same metrics.
 - DPO downstream: does the label source change what a trained policy writes?
