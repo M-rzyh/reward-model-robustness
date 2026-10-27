@@ -1,0 +1,249 @@
+{
+  "score_dir": "results/best_of_n/scores",
+  "pool_sha1": "8afc0922dfa4391f66770bfecc9ad972a2b16ac7",
+  "n_prompts": 500,
+  "n_candidates": 8,
+  "reference": {
+    "pool_mean_len": 158.229,
+    "longest_mean_len": 274.022,
+    "picks_longest_chance": 0.125,
+    "flip_rate_two_random_pickers": 0.875
+  },
+  "per_model": {
+    "core_hh_q0_s0": {
+      "train_source": "hh",
+      "seed": 0,
+      "selected_len": 205.392,
+      "picks_longest": 0.292,
+      "n_ties": 15
+    },
+    "core_hh_q0_s1": {
+      "train_source": "hh",
+      "seed": 1,
+      "selected_len": 202.256,
+      "picks_longest": 0.292,
+      "n_ties": 11
+    },
+    "core_hh_q0_s2": {
+      "train_source": "hh",
+      "seed": 2,
+      "selected_len": 203.562,
+      "picks_longest": 0.282,
+      "n_ties": 58
+    },
+    "core_uf_q0_s0": {
+      "train_source": "uf",
+      "seed": 0,
+      "selected_len": 208.728,
+      "picks_longest": 0.274,
+      "n_ties": 29
+    },
+    "core_uf_q0_s1": {
+      "train_source": "uf",
+      "seed": 1,
+      "selected_len": 207.16,
+      "picks_longest": 0.264,
+      "n_ties": 16
+    },
+    "core_uf_q0_s2": {
+      "train_source": "uf",
+      "seed": 2,
+      "selected_len": 197.8,
+      "picks_longest": 0.232,
+      "n_ties": 16
+    }
+  },
+  "per_config": {
+    "hh": {
+      "n_seeds": 3,
+      "selected_len": {
+        "mean": 203.73666666666668,
+        "std": 1.5752794461089512
+      },
+      "picks_longest": {
+        "mean": 0.2886666666666666,
+        "std": 0.005773502691896262
+      }
+    },
+    "uf": {
+      "n_seeds": 3,
+      "selected_len": {
+        "mean": 204.5626666666667,
+        "std": 5.9088832560250575
+      },
+      "picks_longest": {
+        "mean": 0.25666666666666665,
+        "std": 0.021939310229205783
+      }
+    }
+  },
+  "pairings": {
+    "within_hh": {
+      "n_pairs": 3,
+      "flip_rate": {
+        "mean": 0.4206666666666667,
+        "std": 0.04548992562461862
+      },
+      "kendall_tau": {
+        "mean": 0.6971350590953883,
+        "std": 0.03541597736358791
+      },
+      "pairs": [
+        {
+          "a": "core_hh_q0_s0",
+          "b": "core_hh_q0_s1",
+          "flip_rate": 0.434,
+          "kendall_tau": 0.6790625955308105,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s0",
+          "b": "core_hh_q0_s2",
+          "flip_rate": 0.458,
+          "kendall_tau": 0.6744013208092552,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s1",
+          "b": "core_hh_q0_s2",
+          "flip_rate": 0.37,
+          "kendall_tau": 0.7379412609460991,
+          "tau_nan_prompts": 1
+        }
+      ]
+    },
+    "within_uf": {
+      "n_pairs": 3,
+      "flip_rate": {
+        "mean": 0.38000000000000006,
+        "std": 0.010392304845413272
+      },
+      "kendall_tau": {
+        "mean": 0.6349944736413812,
+        "std": 0.01196539778642568
+      },
+      "pairs": [
+        {
+          "a": "core_uf_q0_s0",
+          "b": "core_uf_q0_s1",
+          "flip_rate": 0.368,
+          "kendall_tau": 0.6347456781206213,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_uf_q0_s0",
+          "b": "core_uf_q0_s2",
+          "flip_rate": 0.386,
+          "kendall_tau": 0.6470823290866882,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_uf_q0_s1",
+          "b": "core_uf_q0_s2",
+          "flip_rate": 0.386,
+          "kendall_tau": 0.6231554137168342,
+          "tau_nan_prompts": 1
+        }
+      ]
+    },
+    "cross_hh_uf": {
+      "n_pairs": 9,
+      "flip_rate": {
+        "mean": 0.6673333333333333,
+        "std": 0.03627671429443411
+      },
+      "kendall_tau": {
+        "mean": 0.37399491585433986,
+        "std": 0.030838146903579642
+      },
+      "pairs": [
+        {
+          "a": "core_hh_q0_s0",
+          "b": "core_uf_q0_s0",
+          "flip_rate": 0.608,
+          "kendall_tau": 0.4207747884873417,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s0",
+          "b": "core_uf_q0_s1",
+          "flip_rate": 0.652,
+          "kendall_tau": 0.3935445025549874,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s0",
+          "b": "core_uf_q0_s2",
+          "flip_rate": 0.666,
+          "kendall_tau": 0.3656734505211085,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s1",
+          "b": "core_uf_q0_s0",
+          "flip_rate": 0.686,
+          "kendall_tau": 0.36976460022572805,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s1",
+          "b": "core_uf_q0_s1",
+          "flip_rate": 0.688,
+          "kendall_tau": 0.3547586722005315,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s1",
+          "b": "core_uf_q0_s2",
+          "flip_rate": 0.734,
+          "kendall_tau": 0.31396287991507826,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s2",
+          "b": "core_uf_q0_s0",
+          "flip_rate": 0.632,
+          "kendall_tau": 0.4037653144946724,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s2",
+          "b": "core_uf_q0_s1",
+          "flip_rate": 0.658,
+          "kendall_tau": 0.37821630157243,
+          "tau_nan_prompts": 1
+        },
+        {
+          "a": "core_hh_q0_s2",
+          "b": "core_uf_q0_s2",
+          "flip_rate": 0.682,
+          "kendall_tau": 0.36549373271718044,
+          "tau_nan_prompts": 1
+        }
+      ]
+    }
+  },
+  "flip_gap": {
+    "cross_minus_within_hh": {
+      "mean": 0.24666666666666667,
+      "ci95_bootstrap_prompts": [
+        0.21153888888888892,
+        0.286
+      ]
+    },
+    "cross_minus_within_uf": {
+      "mean": 0.28733333333333333,
+      "ci95_bootstrap_prompts": [
+        0.2437611111111111,
+        0.3257833333333333
+      ]
+    },
+    "cross_minus_within_both": {
+      "mean": 0.267,
+      "ci95_bootstrap_prompts": [
+        0.2354416666666667,
+        0.2983333333333334
+      ]
+    }
+  }
+}
