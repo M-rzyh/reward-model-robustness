@@ -3,8 +3,8 @@
 #SBATCH --account=aip-mtaylor3
 #SBATCH --gres=gpu:l40s:1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=24G
-#SBATCH --time=01:30:00
+#SBATCH --mem=8G
+#SBATCH --time=00:30:00
 #SBATCH --output=logs/%x_%j.out
 
 module --force purge

@@ -2,8 +2,8 @@
 #SBATCH --job-name=rmr-cpu
 #SBATCH --account=aip-mtaylor3
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=00:30:00
+#SBATCH --mem=2G
+#SBATCH --time=00:05:00
 #SBATCH --output=logs/%x_%j.out
 
 module --force purge
