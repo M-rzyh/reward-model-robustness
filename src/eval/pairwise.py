@@ -34,6 +34,9 @@ def main():
     p.add_argument("--run_dir", required=True, help="folder with model/ and run_meta.json")
     p.add_argument("--batch_size", type=int, default=16)
     p.add_argument("--limit", type=int, default=None, help="smoke test: first N pairs per test set")
+    p.add_argument("--dtype", choices=["bfloat16", "float32"], default="bfloat16",
+                   help="float32 = precision check; bf16 rounds large rewards enough to create exact ties")
+    p.add_argument("--out_dir", default="results/eval")
     a = p.parse_args()
     run_dir = Path(a.run_dir)
     meta = json.loads((run_dir / "run_meta.json").read_text())
@@ -41,7 +44,7 @@ def main():
     max_length = meta["config"]["max_length"]
 
     tok = AutoTokenizer.from_pretrained(run_dir / "model")
-    model = AutoModelForSequenceClassification.from_pretrained(run_dir / "model", dtype=torch.bfloat16).to("cuda").eval()
+    model = AutoModelForSequenceClassification.from_pretrained(run_dir / "model", dtype=getattr(torch, a.dtype)).to("cuda").eval()
     model.config.pad_token_id = tok.pad_token_id
 
     results, scores = {}, {}
@@ -61,12 +64,12 @@ def main():
         scores[name] = {"pair_id": [r["pair_id"] for r in records], "r_chosen": r_c.tolist(), "r_rejected": r_r.tolist()}
         print(f"{run_id}  {name}: acc={results[name]['accuracy']:.4f} CI={results[name]['accuracy_ci95']}  n={len(records)}")
 
-    out_dir = Path("results/eval")
+    out_dir = Path(a.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / f"{run_id}.json").write_text(json.dumps({"run_id": run_id, "run_meta": meta, "eval": results}, indent=2))
+    (out_dir / f"{run_id}.json").write_text(json.dumps({"run_id": run_id, "run_meta": meta, "dtype": a.dtype, "eval": results}, indent=2))
     (out_dir / f"{run_id}_scores.json").write_text(json.dumps(scores))
 
-    if not a.limit:                                               # smoke runs stay out of the index
+    if not a.limit and a.dtype == "bfloat16":                     # smoke and precision-check runs stay out of the index
         row = {"run_id": run_id, "train_source": meta["train_source"], "seed": meta["seed"], "q": meta["noise"]["q"],
                "acc_hh_test": results["hh_test"]["accuracy"], "acc_uf_test": results["uf_test"]["accuracy"],
                "n_train": meta["n_train_after_length_filter"], "steps": meta["n_optimizer_steps"],

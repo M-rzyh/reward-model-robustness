@@ -1,17 +1,21 @@
 """Aggregate per-run eval JSONs into the 2x2 table: mean ± std over seeds, with the length-only baseline row."""
+import argparse
 import json
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 
-EVAL_DIR = Path("results/eval")
 TEST_SETS = ["hh_test", "uf_test"]
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--eval_dir", default="results/eval")
+    ap.add_argument("--out", default="results/summary_2x2", help="writes <out>.json and <out>.md")
+    a = ap.parse_args()
     runs = defaultdict(list)                      # (train_source, q) -> one entry per seed
-    for f in sorted(EVAL_DIR.glob("*.json")):
+    for f in sorted(Path(a.eval_dir).glob("*.json")):
         if f.name.endswith("_scores.json") or f.name.startswith("smoke"):
             continue
         d = json.loads(f.read_text())
@@ -39,9 +43,9 @@ def main():
 
     table = "\n".join(lines)
     print(table)
-    Path("results/summary_2x2.json").write_text(json.dumps(summary, indent=2))
-    Path("results/summary_2x2.md").write_text(table + "\n")
-    print("wrote results/summary_2x2.{json,md}")
+    Path(f"{a.out}.json").write_text(json.dumps(summary, indent=2))
+    Path(f"{a.out}.md").write_text(table + "\n")
+    print(f"wrote {a.out}.{{json,md}}")
 
 
 if __name__ == "__main__":
