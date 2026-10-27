@@ -12,8 +12,7 @@ Every number below comes from the files in `results/` and `experiments/index.csv
 
 ## Why
 
-This continues the AAAI-27 student abstract *"Mind the Gap: Human and Synthetic Feedback Performance Diverge in
-Learning from Preferences"* (under review), which found that human and synthetic feedback lead to different results
+I our previous (under review) works we found that human and synthetic feedback lead to different results
 in preference learning for control tasks. Here the same question is asked for language-model reward models. Public
 datasets already carry the human-vs-AI label axis: HH-RLHF was labelled by crowdworkers (Bai et al., 2022), while
 UltraFeedback was rated by GPT-4 (Cui et al., 2023), the kind of AI feedback used in RLAIF (Lee et al., 2023).
